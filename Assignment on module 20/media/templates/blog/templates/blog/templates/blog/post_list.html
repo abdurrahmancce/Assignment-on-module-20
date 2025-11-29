@@ -1,0 +1,36 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block content %}
+  <h1>{% if active_tag %}Tag: {{ active_tag }}{% else %}Latest Posts{% endif %}</h1>
+
+  {% for post in posts %}
+    <article>
+      <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+      <p>By {{ post.author.username }} • {{ post.created_at|date:"M d, Y" }}</p>
+      {% if post.featured_image %}
+        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" style="max-width: 100%; height: auto;">
+      {% endif %}
+      <p>{{ post.content|truncatewords:40 }}</p>
+      <p>Tags:
+        {% for tag in post.tags.all %}
+          <a href="{% url 'tag_list' tag.slug %}">#{{ tag.name }}</a>
+        {% empty %}No tags{% endfor %}
+      </p>
+    </article>
+    <hr>
+  {% empty %}
+    <p>No posts found.</p>
+  {% endfor %}
+
+  <div class="pagination">
+    {% if is_paginated %}
+      {% if page_obj.has_previous %}
+        <a href="?{% if query %}q={{ query }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+      {% endif %}
+      <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?{% if query %}q={{ query }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+      {% endif %}
+    {% endif %}
+  </div>
+{% endblock %}

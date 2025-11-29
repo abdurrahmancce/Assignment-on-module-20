@@ -1,0 +1,19 @@
+<h3>Recent posts</h3>
+<ul>
+  {% load blog_tags %}
+  {% recent_posts 5 as recent_list %}
+  {% for p in recent_list %}
+    <li><a href="{{ p.get_absolute_url }}">{{ p.title }}</a></li>
+  {% empty %}
+    <li>No posts yet.</li>
+  {% endfor %}
+</ul>
+
+<h3>Tags</h3>
+<ul>
+  {% for tag in tags %}
+    <li><a href="{% url 'tag_list' tag.slug %}">{{ tag.name }}</a></li>
+  {% empty %}
+    <li>No tags.</li>
+  {% endfor %}
+</ul>
